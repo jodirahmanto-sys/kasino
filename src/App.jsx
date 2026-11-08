@@ -4,6 +4,7 @@ import Products from './Products'
 import Cashier from './Cashier'
 import History from './History'
 import Settings from './Settings'
+import Guide from './Guide'
 
 function Login({ onIn }) {
   const [email, setEmail] = useState('')
@@ -44,6 +45,7 @@ function Shell({ user, onOut }) {
   const [list, setList] = useState([])
   const [current, setCurrent] = useState(null)
   const [tab, setTab] = useState('kasir')
+  const [guide, setGuide] = useState(false)
   const [msg, setMsg] = useState('Memuat usaha…')
 
   useEffect(() => {
@@ -72,8 +74,10 @@ function Shell({ user, onOut }) {
           </select>
         ) : b && <strong className="biz">{b.name}</strong>}
         <span className="grow" />
+        <button className="small" onClick={() => setGuide(true)}>Panduan</button>
         <button className="small" onClick={onOut}>Keluar</button>
       </header>
+      {guide && <Guide onClose={() => setGuide(false)} />}
       <main>
         {!b && <p className="muted">{msg}</p>}
         {b && tab === 'kasir' && <Cashier key={current} business={b} />}

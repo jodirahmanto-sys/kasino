@@ -25,10 +25,14 @@ export default function Receipt({ text }) {
     const w = window.open('', '_blank', 'width=380,height=640')
     if (!w) return alert('Pop-up diblokir. Izinkan pop-up untuk situs ini, lalu coba lagi.')
     const body = plain.replace(/&/g, '&amp;').replace(/</g, '&lt;')
-    w.document.write(`<!doctype html><html><head><meta charset="utf-8"><title>Struk</title><style>@page{margin:0}body{margin:0;padding:3mm;width:${width}mm;font:11px/1.4 ui-monospace,Consolas,monospace;color:#000}pre{margin:0;white-space:pre-wrap;word-break:break-word;font:inherit}</style></head><body><pre>${body}</pre></body></html>`)
+    w.document.write(`<!doctype html><html><head><meta charset="utf-8"><title>Struk</title><style id="pg">@page{size:${width}mm 200mm;margin:0}</style><style>html,body{margin:0}body{box-sizing:border-box;padding:3mm;width:${width}mm;font:11px/1.4 ui-monospace,Consolas,monospace;color:#000}pre{margin:0;white-space:pre-wrap;word-break:break-word;font:inherit}</style></head><body><pre>${body}</pre></body></html>`)
     w.document.close()
     w.focus()
-    setTimeout(() => w.print(), 250)
+    setTimeout(() => {
+      const h = Math.ceil((w.document.body.scrollHeight * 25.4) / 96) + 4
+      w.document.getElementById('pg').textContent = `@page{size:${width}mm ${h}mm;margin:0}`
+      w.print()
+    }, 300)
   }
 
   return (
