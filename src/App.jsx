@@ -47,7 +47,7 @@ function Shell({ user, onOut }) {
   const [msg, setMsg] = useState('Memuat usaha…')
 
   useEffect(() => {
-    client.from('memberships').select('role, businesses(id, name, business_type, phone, address)').then(({ data, error }) => {
+    client.from('memberships').select('role, businesses(id, name, business_type, phone, address, theme)').then(({ data, error }) => {
       if (error) return setMsg('Gagal memuat usaha: ' + error.message)
       const rows = (data || []).filter((r) => r.businesses)
       setList(rows)
@@ -59,6 +59,7 @@ function Shell({ user, onOut }) {
   const row = list.find((r) => r.businesses.id === current)
   const b = row?.businesses
   const canEdit = row?.role === 'owner'
+  useEffect(() => { document.documentElement.dataset.theme = b?.theme || 'laut' }, [b?.theme])
   const patchBusiness = (nb) => setList((l) => l.map((r) => (r.businesses.id === nb.id ? { ...r, businesses: nb } : r)))
 
   return (
