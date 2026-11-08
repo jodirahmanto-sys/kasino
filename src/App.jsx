@@ -20,9 +20,7 @@ function Login({ onIn }) {
   }
   return (
     <main className="login">
-      <span className="logo big">K</span>
-      <h1>KASINO</h1>
-      <p className="muted">Kasir Inovasi untuk kedai dan UMKM</p>
+      <img className="logo-full" src="/logo-full.png" alt="KASINO, Kasir Inovasi untuk Kedai dan UMKM" />
       <form onSubmit={submit}>
         <label>Email<input type="email" value={email} onChange={(e) => setEmail(e.target.value)} required /></label>
         <label>Password<input type="password" value={password} onChange={(e) => setPassword(e.target.value)} required /></label>
@@ -67,7 +65,7 @@ function Shell({ user, onOut }) {
   return (
     <>
       <header className="bar">
-        <span className="logo">K</span>
+        <img className="logo-img" src="/logo.png" alt="KASINO" />
         {list.length > 1 ? (
           <select className="bizsel" value={current} onChange={(e) => setCurrent(e.target.value)}>
             {list.map((r) => <option key={r.businesses.id} value={r.businesses.id}>{r.businesses.name}</option>)}
