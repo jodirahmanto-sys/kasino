@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import { client, rupiah, buildReceipt, ymd } from './client'
+import Receipt from './Receipt'
 
 export default function History({ business, canEdit }) {
   const [mode, setMode] = useState('day')
@@ -70,7 +71,7 @@ export default function History({ business, canEdit }) {
               <button onClick={() => setOpenId(openId === r.id ? null : r.id)}>Lihat struk</button>
               {canEdit && <button className="danger" onClick={() => remove(r)}>Hapus</button>}
             </div>
-            {openId === r.id && <pre className="receipt">{buildReceipt(business, items, r.total, r.paid, r.created_at)}</pre>}
+            {openId === r.id && <Receipt text={buildReceipt(business, items, r.total, r.paid, r.created_at)} />}
           </div>
         )
       })}

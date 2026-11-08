@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from 'react'
 import { client, rupiah, digits, buildReceipt, tint } from './client'
+import Receipt from './Receipt'
 
 export default function Cashier({ business }) {
   const [products, setProducts] = useState([])
@@ -12,7 +13,6 @@ export default function Cashier({ business }) {
   const [note, setNote] = useState('')
   const [err, setErr] = useState('')
   const [receipt, setReceipt] = useState(null)
-  const [wa, setWa] = useState('')
   const [today, setToday] = useState({ omzet: 0, count: 0 })
 
   useEffect(() => {
@@ -63,19 +63,11 @@ export default function Cashier({ business }) {
     setCart([]); setPaid(''); setNote(''); setOpen(false); loadToday()
   }
 
-  function waLink() {
-    let n = digits(wa)
-    if (n.startsWith('0')) n = '62' + n.slice(1)
-    return `https://wa.me/${n}?text=${encodeURIComponent(receipt)}`
-  }
-
   if (receipt) return (
     <section className="done">
       <h2>Transaksi tersimpan</h2>
-      <pre className="receipt">{receipt}</pre>
-      <input className="field" placeholder="No. WhatsApp pelanggan (08…)" inputMode="tel" value={wa} onChange={(e) => setWa(e.target.value)} />
-      <a className="btn primary full" href={waLink()} target="_blank" rel="noreferrer">Kirim struk lewat WhatsApp</a>
-      <button className="full" onClick={() => { setReceipt(null); setWa('') }}>Transaksi baru</button>
+      <Receipt text={receipt} />
+      <button className="full" onClick={() => setReceipt(null)}>Transaksi baru</button>
     </section>
   )
 
