@@ -1,0 +1,58 @@
+:root { --ink:#1d2433; --paper:#eef1f6; --card:#fff; --line:#dfe4ee; --key:#2f5bff; --key-dark:#2342c4; --lcd:#ffd23f; --display:#161b28; --err:#c62f2f; --mute:#6b7488 }
+* { box-sizing:border-box }
+body { margin:0; font-family:'Figtree',system-ui,sans-serif; background:var(--paper); color:var(--ink); line-height:1.45 }
+h1,h2,h3,.big,.lcd,.unit b,.total strong,.biz { font-family:'Bricolage Grotesque','Figtree',sans-serif }
+main { max-width:760px; margin:0 auto; padding:8px 16px 170px }
+h1,h2,h3 { margin:0 0 6px; font-weight:800 } h2 { font-size:1.4rem } h3 { font-size:1.05rem }
+p { margin:0 0 8px } .muted { color:var(--mute) } .grow { flex:1 } .error { color:var(--err); font-weight:600 } .pad { padding:20px }
+input, select, button { font:inherit; color:inherit; border:1px solid var(--line); border-radius:12px; padding:10px 14px; background:var(--card) }
+input:focus, select:focus { border-color:var(--key); outline:0; box-shadow:0 0 0 3px #2f5bff33 }
+:focus-visible { outline:2px solid var(--key); outline-offset:2px }
+button { cursor:pointer; font-weight:600; box-shadow:0 3px 0 #cfd6e4; transition:transform .08s, box-shadow .08s }
+button:active { transform:translateY(3px); box-shadow:0 0 0 #0000 }
+button.primary { background:var(--key); color:#fff; border-color:var(--key-dark); box-shadow:0 3px 0 var(--key-dark) } button.primary:active { box-shadow:0 0 0 #0000 }
+button.danger { color:var(--err) } button.small { padding:6px 14px; font-size:.85rem }
+button.full, a.full { width:100%; margin:6px 0 } .field { width:100%; margin:6px 0 }
+.bar { display:flex; align-items:center; gap:10px; padding:14px 16px 6px; max-width:760px; margin:0 auto }
+.logo { display:grid; place-items:center; flex:none; width:36px; height:36px; border-radius:11px; background:var(--key); color:#fff; font:800 1.15rem 'Bricolage Grotesque',sans-serif; box-shadow:0 3px 0 var(--key-dark) } .logo.big { width:56px; height:56px; font-size:1.8rem; margin-bottom:12px }
+.biz { font-size:1.2rem } .bizsel { font:800 1.1rem 'Bricolage Grotesque',sans-serif; border:0; background:transparent; padding:4px 0; max-width:60vw }
+.row { display:flex; gap:8px; align-items:center; flex-wrap:wrap; margin:8px 0 } .row.between { justify-content:space-between }
+.card { background:var(--card); border:1px solid var(--line); border-radius:18px; padding:14px; margin:10px 0 }
+.card.display { background:var(--display); border-color:var(--display); color:#fff } .display .muted { color:#9aa3b8 } .display .big { color:var(--lcd) }
+.big { font-size:2.2rem; font-weight:800; margin:0 0 10px; font-variant-numeric:tabular-nums } .nav strong { text-align:center }
+.pill { background:var(--paper); border-radius:999px; padding:3px 12px; font-size:.8rem; font-weight:600; color:var(--mute) }
+.seg { display:flex; gap:4px; padding:4px; background:#e3e8f1; border-radius:14px; margin:6px 0 }
+.seg button { flex:1; border:0; background:transparent; box-shadow:none; border-radius:10px } .seg button.on { background:#fff; color:var(--key); box-shadow:0 1px 3px #1d243326 }
+.chips { display:flex; gap:8px; overflow-x:auto; padding:4px 2px 12px }
+.chip { border-radius:999px; padding:6px 16px; white-space:nowrap; box-shadow:none } .chip:active { transform:none } .chip.on { background:var(--ink); color:#fff; border-color:var(--ink) } .chip.small { padding:2px 10px; font-size:.8rem }
+.cards { display:grid; grid-template-columns:repeat(auto-fill,minmax(165px,1fr)); gap:12px }
+.pcard { background:var(--card); border:1px solid var(--line); border-radius:20px; overflow:hidden }
+.t0{--tint:#ffe1d6} .t1{--tint:#d9f2e3} .t2{--tint:#dce6ff} .t3{--tint:#fff0bd} .t4{--tint:#eadcff} .t5{--tint:#d5f0f4}
+.ph { position:relative; display:grid; place-items:center; height:96px; background:var(--tint,#e3e8f1); font:800 2.8rem 'Bricolage Grotesque',sans-serif; color:#1d243399 }
+.badge { position:absolute; top:8px; right:8px; min-width:28px; height:28px; display:grid; place-items:center; border-radius:999px; background:var(--key); color:#fff; font:800 .9rem 'Figtree',sans-serif; animation:pop .2s }
+.pbody { padding:10px; display:grid; gap:8px } .pbody h3 { margin:0 }
+.unit { display:flex; justify-content:space-between; align-items:center; gap:8px; width:100%; text-align:left } .unit b { font-size:1rem; font-variant-numeric:tabular-nums }
+.unit.static { background:var(--paper); border:0; box-shadow:none; margin:4px 0; padding:8px 12px; border-radius:10px; pointer-events:none }
+.custom { border-style:dashed; width:100%; color:var(--mute) }
+.cartbar { position:fixed; left:12px; right:12px; bottom:calc(68px + env(safe-area-inset-bottom)); max-width:736px; margin:0 auto; display:flex; justify-content:space-between; align-items:center; gap:12px; background:var(--display); color:#fff; border-radius:20px; padding:10px 10px 10px 18px; z-index:4; box-shadow:0 10px 28px #1d243355; animation:up .25s }
+.cartbar small { display:block; color:#9aa3b8 } .lcd { display:block; color:var(--lcd); font-size:1.5rem; line-height:1.1; font-variant-numeric:tabular-nums }
+.tabbar { position:fixed; left:0; right:0; bottom:0; display:flex; justify-content:center; background:#fff; border-top:1px solid var(--line); padding:6px 8px calc(6px + env(safe-area-inset-bottom)); z-index:5 }
+.tabbar button { flex:1; max-width:190px; display:grid; justify-items:center; gap:2px; border:0; background:transparent; box-shadow:none; color:var(--mute); font-size:.72rem; padding:6px 0 }
+.tabbar button:active { transform:none } .tabbar button.on { color:var(--key); font-weight:800 }
+.tabbar svg { width:24px; height:24px; fill:none; stroke:currentColor; stroke-width:2; stroke-linecap:round; stroke-linejoin:round }
+.overlay { position:fixed; inset:0; background:#161b2899; display:flex; align-items:flex-end; justify-content:center; z-index:10 }
+.sheet { background:var(--card); width:100%; max-width:640px; max-height:92vh; overflow:auto; border-radius:26px 26px 0 0; padding:20px 16px calc(20px + env(safe-area-inset-bottom)); animation:up .25s }
+.list { list-style:none; padding:0; margin:0 } .list li { padding:8px 0; border-bottom:1px solid var(--line) }
+.cartrow { display:flex; gap:8px; align-items:center; flex-wrap:wrap } .cartrow span { flex:1 1 100%; font-weight:600 } .cartrow .price { flex:1; min-width:100px; padding:6px 10px } .cartrow b { min-width:22px; text-align:center }
+.total { font-size:1.05rem; margin:14px 0 } .total strong { font-size:1.7rem; margin-left:8px; font-variant-numeric:tabular-nums }
+.check { display:flex; gap:8px; align-items:flex-start; margin:8px 0 } .check input { margin-top:4px } .label { font-weight:700; margin:10px 0 0 }
+.receipt { position:relative; background:#fff; border:1px solid var(--line); border-bottom:0; padding:16px 16px 20px; margin:12px 0 22px; white-space:pre-wrap; font-family:ui-monospace,Consolas,monospace; font-size:.85rem }
+.receipt::after { content:''; position:absolute; left:-1px; right:-1px; bottom:-10px; height:10px; background:linear-gradient(135deg,#fff 5px,transparent 0) 0 0/14px 10px, linear-gradient(225deg,#fff 5px,transparent 0) 0 0/14px 10px }
+a.btn { display:block; text-align:center; padding:11px 14px; border-radius:12px; text-decoration:none; border:1px solid var(--key-dark); box-shadow:0 3px 0 var(--key-dark) } a.btn.primary { background:var(--key); color:#fff; font-weight:600 }
+.login { max-width:360px; margin:10vh auto 0; padding:0 16px } .login form, .form { display:grid; gap:12px; max-width:420px } .login label, .form label { display:grid; gap:4px; font-weight:600 } .login h1 { font-size:2.6rem }
+@keyframes up { from { transform:translateY(24px); opacity:0 } } @keyframes pop { from { transform:scale(.4) } }
+@media (prefers-reduced-motion:reduce) { * { animation:none !important; transition:none !important } }
+.ph img { position:absolute; inset:0; width:100%; height:100%; object-fit:cover }
+.thumb { width:44px; height:44px; border-radius:10px; object-fit:cover }
+.photo { display:grid; place-items:center; width:72px; height:72px; border-radius:14px; overflow:hidden; background:#e3e8f1; font:800 1.6rem 'Bricolage Grotesque',sans-serif; color:var(--mute) } .photo img { width:100%; height:100%; object-fit:cover }
+.btn-like { cursor:pointer; border:1px solid var(--line); border-radius:12px; padding:10px 14px; font-weight:600; background:#fff; box-shadow:0 3px 0 #cfd6e4 }
