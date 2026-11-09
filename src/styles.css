@@ -82,3 +82,8 @@ input[type=date], input[type=month] { -webkit-appearance:none; appearance:none; 
 .logo-img { width:46px; height:46px; object-fit:contain; flex:none }
 .logo-full { display:block; width:min(240px,70%); height:auto; margin:0 auto 20px }
 .login { text-align:left }
+/* v12: logo baru */
+.brandhead { text-align:center; margin-bottom:24px }
+.logo-hero { display:block; width:112px; height:auto; margin:0 auto 10px }
+.wordmark { margin:0; font-size:2.6rem; letter-spacing:.03em; color:#1B3A6B }
+.tag { margin:0; color:var(--mute) }

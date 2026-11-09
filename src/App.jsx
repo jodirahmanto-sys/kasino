@@ -20,7 +20,11 @@ function Login({ onIn }) {
   }
   return (
     <main className="login">
-      <img className="logo-full" src="/logo-full.png" alt="KASINO, Kasir Inovasi untuk Kedai dan UMKM" />
+      <div className="brandhead">
+        <img className="logo-hero" src="/logo.png" alt="" />
+        <h1 className="wordmark">KASINO</h1>
+        <p className="tag">Kasir Inovasi untuk Kedai dan UMKM</p>
+      </div>
       <form onSubmit={submit}>
         <label>Email<input type="email" value={email} onChange={(e) => setEmail(e.target.value)} required /></label>
         <label>Password<input type="password" value={password} onChange={(e) => setPassword(e.target.value)} required /></label>
