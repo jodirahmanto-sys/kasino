@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
-import { client, rupiah, buildReceipt, ymd } from './client'
-import Receipt from './Receipt'
+import { client, rupiah, ymd } from './client'
+import Receipt from './Receipt.jsx'
 
 export default function History({ business, canEdit }) {
   const [mode, setMode] = useState('day')
@@ -15,7 +15,7 @@ export default function History({ business, canEdit }) {
 
   useEffect(() => {
     client.from('transactions')
-      .select('id,total,paid,payment_method,note,created_at,transaction_items(product_name,unit_price,qty)')
+      .select('id,total,paid,payment_method,note,created_at,nota_no,customer_name,cashier_name,shipping,transaction_items(product_name,unit_price,qty)')
       .eq('business_id', business.id).gte('created_at', start.toISOString()).lt('created_at', end.toISOString())
       .order('created_at', { ascending: false })
       .then(({ data, error }) => { if (error) setErr(error.message); else setRows(data) })
@@ -23,6 +23,7 @@ export default function History({ business, canEdit }) {
 
   const shift = (n) => setDate(mode === 'day' ? new Date(date.getFullYear(), date.getMonth(), date.getDate() + n) : new Date(date.getFullYear(), date.getMonth() + n, 1))
   const omzet = rows.reduce((s, r) => s + r.total, 0)
+  const shipSum = rows.reduce((s, r) => s + (r.shipping || 0), 0)
   const sold = {}
   rows.forEach((r) => r.transaction_items.forEach((i) => { sold[i.product_name] = (sold[i.product_name] || 0) + i.qty }))
   const label = date.toLocaleDateString('id-ID', mode === 'day' ? { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' } : { month: 'long', year: 'numeric' })
@@ -50,6 +51,7 @@ export default function History({ business, canEdit }) {
         <p className="muted">Omzet</p>
         <p className="big">{rupiah(omzet)}</p>
         <div className="row between"><div><p className="muted">Transaksi</p><b>{rows.length}</b></div><div><p className="muted">Rata-rata per transaksi</p><b>{rupiah(rows.length ? Math.round(omzet / rows.length) : 0)}</b></div></div>
+        {shipSum > 0 && <p className="muted">Termasuk ongkir {rupiah(shipSum)}</p>}
       </div>
       {Object.keys(sold).length > 0 && (
         <div className="card"><h3>Terjual</h3>
@@ -65,13 +67,14 @@ export default function History({ business, canEdit }) {
         return (
           <div className="card" key={r.id}>
             <div className="row between"><b>{mode === 'day' ? d.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' }) : d.toLocaleString('id-ID', { dateStyle: 'medium', timeStyle: 'short' })}</b><b>{rupiah(r.total)}</b></div>
+            {r.nota_no && <p className="muted">No. {r.nota_no}{r.customer_name ? ` (${r.customer_name})` : ''}</p>}
             <p className="muted">{items.map((i) => `${i.qty}x ${i.name}`).join(', ')}{r.note ? ` (${r.note})` : ''}</p>
             <div className="row">
               <span className="pill">{r.payment_method}</span>
               <button onClick={() => setOpenId(openId === r.id ? null : r.id)}>Lihat struk</button>
               {canEdit && <button className="danger" onClick={() => remove(r)}>Hapus</button>}
             </div>
-            {openId === r.id && <Receipt text={buildReceipt(business, items, r.total, r.paid, r.created_at)} />}
+            {openId === r.id && <Receipt data={{ business, date: r.created_at, nota: r.nota_no, cashier: r.cashier_name, customer: r.customer_name, items, subtotal: r.total - (r.shipping || 0), shipping: r.shipping || 0, total: r.total, paid: r.paid, note: r.note }} />}
           </div>
         )
       })}

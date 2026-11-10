@@ -1,8 +1,11 @@
 import { useEffect, useMemo, useState } from 'react'
-import { client, rupiah, digits, buildReceipt, tint } from './client'
-import Receipt from './Receipt'
+import { client, rupiah, digits, tint } from './client'
+import Receipt from './Receipt.jsx'
 
-export default function Cashier({ business }) {
+const lsGet = (k) => { try { return localStorage.getItem(k) || '' } catch { return '' } }
+const lsSet = (k, v) => { try { localStorage.setItem(k, v) } catch { /* abaikan */ } }
+
+export default function Cashier({ business, defaultCashier = '' }) {
   const [products, setProducts] = useState([])
   const [q, setQ] = useState('')
   const [cat, setCat] = useState('Semua')
@@ -13,6 +16,9 @@ export default function Cashier({ business }) {
   const [note, setNote] = useState('')
   const [err, setErr] = useState('')
   const [receipt, setReceipt] = useState(null)
+  const [customer, setCustomer] = useState('')
+  const [cashier, setCashier] = useState(() => lsGet('kasino_cashier') || defaultCashier)
+  const [shipping, setShipping] = useState('')
   const [today, setToday] = useState({ omzet: 0, count: 0 })
 
   useEffect(() => {
@@ -30,7 +36,9 @@ export default function Cashier({ business }) {
 
   const cats = useMemo(() => [...new Set(products.map((p) => p.categories?.name).filter(Boolean))], [products])
   const shown = products.filter((p) => (cat === 'Semua' || p.categories?.name === cat) && p.name.toLowerCase().includes(q.toLowerCase()))
-  const total = cart.reduce((s, i) => s + i.price * i.qty, 0)
+  const subtotal = cart.reduce((s, i) => s + i.price * i.qty, 0)
+  const ship = Number(digits(shipping)) || 0
+  const total = subtotal + ship
   const count = cart.reduce((s, i) => s + i.qty, 0)
   const inCart = (id) => cart.filter((i) => i.product_id === id).reduce((s, i) => s + i.qty, 0)
   const pay = Number(digits(paid)) || total
@@ -52,21 +60,26 @@ export default function Cashier({ business }) {
     if (!cart.length) return setErr('Pilih produk dulu.')
     if (pay < total) return setErr('Uang bayar kurang dari total.')
     const { data: t, error } = await client.from('transactions')
-      .insert({ business_id: business.id, total, paid: pay, payment_method: method, note: note || null }).select().single()
+      .insert({ business_id: business.id, total, paid: pay, payment_method: method, note: note || null, shipping: ship, customer_name: customer.trim() || null, cashier_name: cashier.trim() || null })
+      .select().single()
     if (error) return setErr(error.message)
     const { error: e2 } = await client.from('transaction_items').insert(cart.map((i) => ({
       transaction_id: t.id, business_id: business.id, product_id: i.product_id,
       product_name: i.name, unit_price: i.price, qty: i.qty, subtotal: i.price * i.qty,
     })))
     if (e2) return setErr('Rincian gagal disimpan: ' + e2.message)
-    setReceipt(buildReceipt(business, cart, total, pay))
-    setCart([]); setPaid(''); setNote(''); setOpen(false); loadToday()
+    lsSet('kasino_cashier', cashier.trim())
+    setReceipt({
+      business, date: t.created_at, nota: t.nota_no, cashier: cashier.trim(), customer: customer.trim(),
+      items: cart.map((i) => ({ name: i.name, qty: i.qty, price: i.price })), subtotal, shipping: ship, total, paid: pay, note,
+    })
+    setCart([]); setPaid(''); setNote(''); setShipping(''); setCustomer(''); setOpen(false); loadToday()
   }
 
   if (receipt) return (
     <section className="done">
       <h2>Transaksi tersimpan</h2>
-      <Receipt text={receipt} />
+      <Receipt data={receipt} />
       <button className="full" onClick={() => setReceipt(null)}>Transaksi baru</button>
     </section>
   )
@@ -113,6 +126,12 @@ export default function Cashier({ business }) {
               </li>
             ))}
           </ul>
+          <div className="row">
+            <input className="field grow" placeholder="Nama pembeli (opsional)" value={customer} onChange={(e) => setCustomer(e.target.value)} />
+            <input className="field grow" placeholder="Nama kasir" value={cashier} onChange={(e) => setCashier(e.target.value)} />
+          </div>
+          <input className="field" placeholder="Ongkir (opsional)" inputMode="numeric" value={shipping ? rupiah(digits(shipping)) : ''} onChange={(e) => setShipping(e.target.value)} />
+          {ship > 0 && <p className="muted">Subtotal {rupiah(subtotal)} + ongkir {rupiah(ship)}</p>}
           <p className="total">Total <strong>{rupiah(total)}</strong></p>
           <div className="chips">
             <button className="chip" onClick={() => setPaid(String(total))}>Uang pas</button>

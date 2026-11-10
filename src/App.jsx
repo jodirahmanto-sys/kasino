@@ -82,7 +82,7 @@ function Shell({ user, onOut }) {
       {guide && <Guide onClose={() => setGuide(false)} />}
       <main>
         {!b && <p className="muted">{msg}</p>}
-        {b && tab === 'kasir' && <Cashier key={current} business={b} />}
+        {b && tab === 'kasir' && <Cashier key={current} business={b} defaultCashier={user.name || ''} />}
         {b && tab === 'riwayat' && <History key={current} business={b} canEdit={canEdit} />}
         {b && tab === 'produk' && <Products key={current} business={b} canEdit={canEdit} />}
         {b && tab === 'pengaturan' && <Settings key={current} business={b} canEdit={canEdit} onSaved={patchBusiness} />}

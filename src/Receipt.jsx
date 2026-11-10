@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { digits } from './client'
+import { receiptText } from './receiptLayout'
 import { receiptPng, receiptPdf } from './receiptImage'
 
 const getW = () => { try { return localStorage.getItem('kasino_paper') || '58' } catch { return '58' } }
@@ -10,18 +11,19 @@ function download(blob, name) {
   document.body.appendChild(a); a.click(); a.remove()
 }
 
-// Struk + kirim WhatsApp (teks atau gambar PNG) + cetak/simpan PDF seukuran kertas.
-export default function Receipt({ text }) {
+// Struk + kirim WhatsApp (gambar PNG atau teks) + cetak/simpan PDF seukuran kertas.
+export default function Receipt({ data }) {
   const [wa, setWa] = useState('')
   const [width, setWidth] = useState(getW)
   const [busy, setBusy] = useState(false)
   const [info, setInfo] = useState('')
-  const plain = text.replace(/\*/g, '')
+  const text = receiptText(data, 32)
+  const name = `struk-${data.nota || 'kasino'}`
 
   function link() {
     let n = digits(wa)
     if (n.startsWith('0')) n = '62' + n.slice(1)
-    return `https://wa.me/${n}?text=${encodeURIComponent(text)}`
+    return `https://wa.me/${n}?text=${encodeURIComponent('```\n' + text + '\n```')}`
   }
   function pickWidth(v) {
     setWidth(v)
@@ -31,10 +33,10 @@ export default function Receipt({ text }) {
   async function sharePng() {
     setBusy(true); setInfo('')
     try {
-      const blob = await receiptPng(text, width)
-      const file = new File([blob], 'struk.png', { type: 'image/png' })
+      const blob = await receiptPng(data, width)
+      const file = new File([blob], name + '.png', { type: 'image/png' })
       if (navigator.canShare?.({ files: [file] })) await navigator.share({ files: [file], title: 'Struk' })
-      else { download(blob, 'struk.png'); setInfo('Gambar struk tersimpan. Lampirkan di WhatsApp lewat tombol klip.') }
+      else { download(blob, name + '.png'); setInfo('Gambar struk tersimpan. Lampirkan di WhatsApp lewat tombol klip.') }
     } catch (e) { if (e?.name !== 'AbortError') setInfo('Gagal membuat gambar: ' + e.message) }
     setBusy(false)
   }
@@ -43,17 +45,16 @@ export default function Receipt({ text }) {
     setBusy(true); setInfo('')
     const w = window.open('', '_blank') // dibuka lebih dulu agar tidak diblokir browser
     try {
-      const blob = await receiptPdf(text, width)
-      const url = URL.createObjectURL(blob)
-      if (w) w.location.href = url
-      else { download(blob, 'struk.pdf'); setInfo('PDF struk tersimpan. Buka file itu untuk mencetak.') }
+      const blob = await receiptPdf(data, width)
+      if (w) w.location.href = URL.createObjectURL(blob)
+      else { download(blob, name + '.pdf'); setInfo('PDF struk tersimpan. Buka file itu untuk mencetak.') }
     } catch (e) { w?.close(); setInfo('Gagal membuat PDF: ' + e.message) }
     setBusy(false)
   }
 
   return (
     <div>
-      <pre className="receipt">{plain}</pre>
+      <pre className="receipt">{text}</pre>
       <button className="primary full" onClick={sharePng} disabled={busy}>Kirim gambar struk (PNG)</button>
       <div className="row">
         <button className="grow" onClick={printPdf} disabled={busy}>Cetak / simpan PDF</button>
