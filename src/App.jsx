@@ -31,6 +31,10 @@ function Login({ onIn }) {
         {err && <p className="error">{err}</p>}
         <button className="primary">Masuk</button>
       </form>
+      <p className="contact">
+        Ada pertanyaan soal pendaftaran atau aplikasi? Hubungi pengembang lewat DM <b>@jucardelin</b> atau email{' '}
+        <a href="mailto:jodirahmanto@gmail.com">jodirahmanto@gmail.com</a>.
+      </p>
     </main>
   )
 }
